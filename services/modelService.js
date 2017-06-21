@@ -8,13 +8,10 @@ var config = nconf.file({ file: configFile, search: true });
 var account = nconf.get('AZURE_STORAGE_ACCOUNT');
 var key = nconf.get('AZURE_STORAGE_ACCESS_KEY');
 var tableSvc = azure.createTableService(account, key);
-var retryOperations = new azure.ExponentialRetryPolicyFilter();
-var queueSvc = azure.createQueueService(account, key).withFilter(retryOperations);
 var blobSvc = azure.createBlobService(account, key);
 
 const modelDefinitionTableName = 'ModelDefinition';
 const datapointTableName = 'ModelDatapoint';
-const modelQueryInputQueue = 'modelqueryinput';
 const modelBlobContainer = 'models';
 
 function deleteFile (file) { 
@@ -131,56 +128,5 @@ module.exports = {
         },
             function (err) { next(err); }
         );
-    },
-    updateModel: function (modelUpdate, next) {
-        ReadEntity(modelDefinitionTableName, modelUpdate.model_group, modelUpdate.model_name).then(function (res) {
-            var entGen = azure.TableUtilities.entityGenerator;
-            var entity = {
-                PartitionKey: entGen.String(modelUpdate.model_group),
-                RowKey: entGen.String(modelUpdate.model_name + "_" + modelUpdate.model_interval),
-                Interval: modelUpdate.model_interval,
-                Url: entGen.String(res.Url._),
-                Arguments: entGen.String(JSON.stringify(modelUpdate.model_arguments))
-            };
-            WriteEntity(datapointTableName, entity).then(
-                function (res) { 
-                    ReadEntities(datapointTableName, modelUpdate.model_group, modelUpdate.model_name,modelUpdate.model_interval).then(
-                        function (res) {
-                            var arguments_all = [];
-                            for (var i = 0, len = res.entries.length; i < len; i++) {
-                                arguments_all.push({
-                                    interval : res.entries[i].Interval._,
-                                    arguments :  JSON.parse(res.entries[i].Arguments._)
-                                });
-                            }
-                            var msg = JSON.stringify({
-                                model_url: entity.Url._,
-                                model_query: modelUpdate,
-                                model_history: arguments_all
-                            });
-                            queueSvc.createQueueIfNotExists(modelQueryInputQueue, function (error, result, response) {
-                                if (!error) {
-                                    queueSvc.createMessage(modelQueryInputQueue, msg, function (error, result, response) {
-                                        if (!error) {
-                                            next("success"); 
-                                        }
-                                        else {
-                                            console.error("Couldn't add message to queue - error: " + error);
-                                            next(error);
-                                        }
-                                    });
-                                }
-                                else{
-                                    console.error("Couldn't create queue - error: " + error);
-                                    next(error);
-                                }
-                            });
-                        },
-                        function (error) { next(error); }
-                    );
-                },
-                function (error) { next(error); }
-            );
-        }, function (error) { next(error) });
     }
 };

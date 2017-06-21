@@ -16,6 +16,19 @@ The `prediction` api returns a stored value of a prediction (which has been init
 ### GET api/prediction/model?model_name=City&model_group=Mexico&interval=11
 Returns a prediction for teh specified model and interval
 
+### POST api/model
+```js
+{
+  "model_group" : "Mexico",
+  "model_name" : "City",
+	"model_interval" : 1,
+	"model_arguments" :  {
+			"cases" : 4, 
+			"rain" : 3.5
+		}
+}
+```
+
 ## api/model
 The `model` api is used to interact with the model definition:
 `POST` uploads the model
@@ -59,19 +72,6 @@ The `model` api is used to interact with the model definition:
       }
     }
   }
-}
-```
-
-### PUT api/model
-```js
-{
-  "model_group" : "Mexico",
-  "model_name" : "City",
-	"model_interval" : 1,
-	"model_arguments" :  {
-			"cases" : 4, 
-			"rain" : 3.5
-		}
 }
 ```
 

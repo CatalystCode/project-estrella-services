@@ -21,8 +21,8 @@ server.use(restifyValidator);
 
 server.post('/api/model', model.post);
 server.get('/api/model', model.get);
-server.put('/api/model', restify.bodyParser(), model.put);
 
+server.post('/api/prediction', restify.bodyParser(), prediction.post);
 server.get('/api/prediction', prediction.get);
 
 var port = process.env.PORT || 8080;

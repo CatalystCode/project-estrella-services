@@ -19,17 +19,7 @@ var modelPostSchema = {
     "required": ["model_group", "model_name", "model_intervals", "model_frequency"]
 }
 
-var modelPutSchema = {
-    "id": "/ModelPut",
-    "type": "object",
-    "properties": {
-        "model_group": { "type": "string" },
-        "model_name": { "type": "string" },
-        "model_interval": { "type": "int" },
-        "model_arguments": { "type": "object" }
-    },
-    "required": ["model_group", "model_name", "model_interval", "model_arguments"]
-}
+
 
 module.exports = {
     get: function (req, res, next) {
@@ -88,17 +78,5 @@ module.exports = {
 
         // parse the incoming request containing the form data
         form.parse(req);
-    },
-    put: function (req, res, next) {
-        if (validate(req.body, modelPutSchema).valid) {
-            var jsonBody = req.body;
-            model.updateModel(jsonBody, function (result) {
-                res.send(result);
-                next();
-            });
-        }
-        else {
-            next(new restify.InvalidArgumentError("invalid schema - correct schema is " + JSON.stringify(modelPutSchema)));
-        }
     }
 }

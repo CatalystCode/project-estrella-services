@@ -8,7 +8,10 @@ var config = nconf.file({ file: configFile, search: true });
 var account = nconf.get('AZURE_STORAGE_ACCOUNT');
 var key = nconf.get('AZURE_STORAGE_ACCESS_KEY');
 var tableSvc = azure.createTableService(account, key);
+var retryOperations = new azure.ExponentialRetryPolicyFilter();
+var queueSvc = azure.createQueueService(account, key).withFilter(retryOperations);
 
+const modelQueryInputQueue = 'modelqueryinput';
 const predictionTableName = 'Prediction';
 
 function ReadEntity(tableName, partitionKey, rowKey) {
@@ -57,5 +60,27 @@ module.exports = {
         },
         function (err) { next(err); })
         ;
+    },
+    postPrediction: function (predictionArgs, next) {
+        var msg = JSON.stringify({
+            model_query: predictionArgs
+        });
+        queueSvc.createQueueIfNotExists(modelQueryInputQueue, function (error, result, response) {
+            if (!error) {
+                queueSvc.createMessage(modelQueryInputQueue, msg, function (error, result, response) {
+                    if (!error) {
+                        next("/api/prediction?model_group="+predictionArgs.model_group+"&model_name="+predictionArgs.model_name+"&interval="+predictionArgs.model_interval); 
+                    }
+                    else {
+                        console.error("Couldn't add message to queue - error: " + error);
+                        next(error);
+                    }
+                });
+            }
+            else{
+                console.error("Couldn't create queue - error: " + error);
+                next(error);
+            }
+        });
     }
 };
