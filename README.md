@@ -10,6 +10,17 @@ Ensure the following AppSettings are provided (either as env settings or within 
     "PORT" : 8080
 }
 ```
+## api/prediction
+The `prediction` api returns a stored value of a prediction (which has been initiated through a previous call to a `api/model` `PUT`)
+
+### GET api/prediction/model?model_name=City&model_group=Mexico&interval=11
+Returns a prediction for teh specified model and interval
+
+## api/model
+The `model` api is used to interact with the model definition:
+`POST` uploads the model
+`GET` returns the model definition
+`PUT` initiates a new prediction
 
 ### POST api/model 
 ```js
