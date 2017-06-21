@@ -10,22 +10,40 @@ Ensure the following AppSettings are provided (either as env settings or within 
     "PORT" : 8080
 }
 ```
+
 ## api/prediction
 The `prediction` api returns a stored value of a prediction (which has been initiated through a previous call to a `api/model` `PUT`)
 
 ### GET api/prediction/model?model_name=City&model_group=Mexico&interval=11
 Returns a prediction for the specified model and interval
 
-### POST api/model
+### POST api/prediction
+Runs a prediction using the specified model
+
 ```js
 {
   "model_group" : "Mexico",
   "model_name" : "City",
-	"model_interval" : 1,
+	"model_interval" : 2,
 	"model_arguments" :  {
-			"cases" : 4, 
-			"rain" : 3.5
+      "meantemp": 4,
+      "rainsum": 3.5
 		}
+}
+```
+
+This posts the following message to the queue:
+```js
+{
+   "model_query": {
+    "model_group": "Mexico",
+    "model_name": "City",
+    "model_interval": 2,
+    "model_arguments": {
+      "meantemp": 4,
+      "rainsum": 3.5
+    }
+  }
 }
 ```
 
@@ -33,7 +51,6 @@ Returns a prediction for the specified model and interval
 The `model` api is used to interact with the model definition:
 `POST` uploads the model
 `GET` returns the model definition
-`PUT` initiates a new prediction
 
 ### POST api/model 
 ```js
@@ -45,8 +62,8 @@ The `model` api is used to interact with the model definition:
 	"model_parameters" : 	{
 		"interval" : {"type" :"integer"},
 		"arguments" :  {
-			"cases" : {"type" :"integer"}, 
-			"rain" : {"type" :"float"}
+			"meantemp" : {"type" :"integer"}, 
+			"rainsum" : {"type" :"float"}
 		}
 	}
 }
@@ -64,10 +81,10 @@ The `model` api is used to interact with the model definition:
       "type": "integer"
     },
     "arguments": {
-      "cases": {
+      "meantemp": {
         "type": "integer"
       },
-      "rain": {
+      "rainsum": {
         "type": "float"
       }
     }
@@ -75,19 +92,5 @@ The `model` api is used to interact with the model definition:
 }
 ```
 
-## Message posted to queue
-```js
-{
-  "model_url": "https://estrellamldata.blob.core.windows.net/models/Indonesia/Bali",
-  "model_query": {
-    "model_group": "Indonesia",
-    "model_name": "Bali",
-    "model_interval": 1,
-    "model_arguments": {
-      "cases": 4,
-      "rain": 3.5
-    }
-  }
-}
-```
+
 
