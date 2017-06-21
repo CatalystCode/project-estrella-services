@@ -1,6 +1,16 @@
 # project-estrella-services
 Backend services for project-estrella
 
+## Configure
+Ensure the following AppSettings are provided (either as env settings or within the `localConfig.json`):
+```
+{
+    "AZURE_STORAGE_ACCOUNT" : "YOUR_ACCOUNT_NAME",
+    "AZURE_STORAGE_ACCESS_KEY" : "YOUR_ACCOUNT_KEY",
+    "PORT" : 8080
+}
+```
+
 ### POST api/model 
 ```js
 {
