@@ -48,8 +48,8 @@ module.exports = {
     post: function (req, res, next) {
         // create an incoming form object
         var form = new formidable.IncomingForm();
-        var fields = {};
         var filePath = "undefined";
+        var metadata = JSON.parse(req.headers["metadata"]);
 
         // specify that we want to allow the user to upload multiple files in a single request
         form.multiples = true;
@@ -64,18 +64,6 @@ module.exports = {
             fs.rename(file.path, filePath);
         });
 
-        form.on('field', function(name, field) {
-            if (name == "model_intervals") {
-                fields[name] = parseInt(field);
-            }
-            else if (name == "model_parameters") {
-                fields[name] = JSON.parse(field);
-            }
-            else {
-                fields[name] = field;
-            }
-        })
-
         // log any errors that occur
         form.on('error', function (err) {
             console.log('An error has occured: \n' + err);
@@ -83,10 +71,11 @@ module.exports = {
 
         // once all the files have been uploaded, send a response to the client
         form.on('end', function () {
-            console.log(fields);
-            var validated = validate(fields, modelPostSchema);
+            metadata["model_intervals"] = parseInt(metadata["model_intervals"]);
+            metadata["model_parameters"] = JSON.parse(metadata["model_parameters"]);
+            var validated = validate(metadata, modelPostSchema);
             if (validated.valid) {
-                jsonBody = fields;
+                jsonBody = metadata;
                 model.saveDefinition(jsonBody, filePath, function (result) {
                     res.send(result);
                     next();
