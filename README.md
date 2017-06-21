@@ -14,7 +14,7 @@ Ensure the following AppSettings are provided (either as env settings or within 
 The `prediction` api returns a stored value of a prediction (which has been initiated through a previous call to a `api/model` `PUT`)
 
 ### GET api/prediction/model?model_name=City&model_group=Mexico&interval=11
-Returns a prediction for teh specified model and interval
+Returns a prediction for the specified model and interval
 
 ### POST api/model
 ```js
