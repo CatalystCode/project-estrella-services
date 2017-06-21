@@ -20,7 +20,7 @@ var modelPostSchema = {
 }
 
 var modelPutSchema = {
-    "id": "/ModePut",
+    "id": "/ModelPut",
     "type": "object",
     "properties": {
         "model_group": { "type": "string" },

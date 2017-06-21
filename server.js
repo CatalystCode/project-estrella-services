@@ -8,6 +8,13 @@ var server = restify.createServer({
 });
 
 server.use(restify.CORS());
+restify.CORS.ALLOW_HEADERS.push("x-requested-with");
+restify.CORS.ALLOW_HEADERS.push("cache-control");
+restify.CORS.ALLOW_HEADERS.push("content-type");
+restify.CORS.ALLOW_HEADERS.push("accept");
+restify.CORS.ALLOW_HEADERS.push("authorization");
+restify.CORS.ALLOW_HEADERS.push("metadata");
+
 server.use(restify.queryParser());
 server.use(restifyValidator);
 
