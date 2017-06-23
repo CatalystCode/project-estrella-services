@@ -1,5 +1,5 @@
 var restify = require('restify');
-var prediction = require('../services/predictionService');
+var prediction = require('../services/prediction-service');
 var validate = require('jsonschema').validate;
 validate.throwError = true;
 

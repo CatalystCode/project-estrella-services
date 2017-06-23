@@ -2,7 +2,7 @@ var restify = require('restify');
 var path = require('path');
 var formidable = require('formidable');
 var fs = require('fs');
-var model = require('../services/modelService');
+var model = require('../services/model-service');
 var validate = require('jsonschema').validate;
 validate.throwError = true;
 
