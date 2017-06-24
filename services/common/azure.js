@@ -1,8 +1,8 @@
 var azure = require('azure-storage'),
     config  =  require('./config').config;
  
-var account = config.get('AZURE_STORAGE_ACCOUNT');
-var key = config.get('AZURE_STORAGE_ACCESS_KEY');
+const account = config.get('AZURE_STORAGE_ACCOUNT');
+const key = config.get('AZURE_STORAGE_ACCESS_KEY');
 var tableSvc = azure.createTableService(account, key);
 var retryOperations = new azure.ExponentialRetryPolicyFilter();
 var queueSvc = azure.createQueueService(account, key).withFilter(retryOperations);
