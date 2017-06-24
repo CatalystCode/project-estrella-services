@@ -6,6 +6,7 @@ var key = config.get('AZURE_STORAGE_ACCESS_KEY');
 var tableSvc = azure.createTableService(account, key);
 var retryOperations = new azure.ExponentialRetryPolicyFilter();
 var queueSvc = azure.createQueueService(account, key).withFilter(retryOperations);
+queueSvc.messageEncoder = new azure.QueueMessageEncoder.TextBase64QueueMessageEncoder();
 var blobSvc = azure.createBlobService(account, key);
 
 
