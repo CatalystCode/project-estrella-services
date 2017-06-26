@@ -30,6 +30,23 @@ module.exports = {
             });
         });
     },
+
+    ReadAllIntervals : function (tableName, rowKey) {
+        return new Promise(function (fulfill, reject) {
+            // if this scan becomes too slow, we need to add a search range for the PartionKey
+            var query = new azure.TableQuery().
+                where('RowKey eq ?', rowKey);
+            tableSvc.queryEntities(tableName, query, null, function (error, result, response) {
+                if (!error) {
+                    fulfill(result);
+                }
+                else {
+                    reject(error);
+                }
+            });
+        });
+    },
+
     WriteEntity : function (tableName, entity) {
         return new Promise(function (fulfill, reject) {
             tableSvc.createTableIfNotExists(tableName, function (error, result, response) {
