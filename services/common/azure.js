@@ -17,15 +17,15 @@ module.exports = {
                 if (!error) {                
                     tableSvc.retrieveEntity(tableName, partitionKey, rowKey, function (error, result, response) {
                         if (!error) {
-                            fulfill(result);
+                            return fulfill(result);
                         }
                         else {
-                            reject(error);
+                            return reject(error);
                         }
                     });
                 }
                 else {
-                    reject(error);
+                    return reject(error);
                 } 
             });
         });
@@ -38,10 +38,10 @@ module.exports = {
                 where('RowKey eq ?', rowKey);
             tableSvc.queryEntities(tableName, query, null, function (error, result, response) {
                 if (!error) {
-                    fulfill(result);
+                    return fulfill(result);
                 }
                 else {
-                    reject(error);
+                    return reject(error);
                 }
             });
         });
@@ -53,15 +53,15 @@ module.exports = {
                 if (!error) {
                     tableSvc.insertOrReplaceEntity(tableName, entity, function (error, result, response) {
                         if (!error) {
-                            fulfill(entity);
+                            return fulfill(entity);
                         }
                         else {
-                            reject(error);
+                            return reject(error);
                         }
                     });
                 }
                 else {
-                    console.error(error);
+                    return reject(error);
                 }
             });
         });
@@ -72,15 +72,15 @@ module.exports = {
                 if (!error) {
                     queueSvc.createMessage(queueName, msg, function (error, result, response) {
                         if (!error) {
-                            fulfill(result); 
+                            return fulfill(result); 
                         }
                         else {
-                            reject(error);
+                            return reject(error);
                         }
                     });
                 }
                 else {
-                    reject(error);
+                    return reject(error);
                 }
             });
         });
@@ -91,15 +91,15 @@ module.exports = {
                 if(!error){
                     blobSvc.createBlockBlobFromLocalFile(containerName, blobName, filePath, function(error, result, response){
                         if (!error) {
-                            fulfill("https://"+account+".blob.core.windows.net/"+containerName+"/"+blobName);
+                            return fulfill("https://"+account+".blob.core.windows.net/"+containerName+"/"+blobName);
                         }
                         else {
-                            reject(error);
+                            return reject(error);
                         }
                     });  
                 }
                 else{
-                    reject(error);
+                    return reject(error);
                 }
             });
         });

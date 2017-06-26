@@ -15,7 +15,7 @@ function deleteFile (file) {
 module.exports = {
     getDefinition: function (group, name, next) {
         azure.ReadEntity(modelDefinitionTableName, group, name).then(function (res) {
-            next({
+            return next({
                 model_group: res.PartitionKey._,
                 model_name: res.RowKey._,
                 model_url: res.Url._,
@@ -24,7 +24,7 @@ module.exports = {
                 model_parameters: JSON.parse(res.Parameters._)
             });
         },
-            function (err) { next(err); }
+            function (err) { return next(err); }
         );
     },
     saveDefinition: function (modelDefinition, filePath, next) {
@@ -43,11 +43,11 @@ module.exports = {
                 Parameters: entGen.String(JSON.stringify(modelDefinition.model_parameters))
             };
             azure.WriteEntity(modelDefinitionTableName, entity).then(
-                function (res) { next(entity.Url._); },
-                function (err) { next(err); }
+                function (res) { return next(entity.Url._); },
+                function (err) { return next(err); }
             );
         },
-            function (err) { next(err); }
+            function (err) { return next(err); }
         );
     }
 };

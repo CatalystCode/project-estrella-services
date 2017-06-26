@@ -28,11 +28,11 @@ module.exports = {
         if (!req.validationErrors()) {
             model.getDefinition(req.query.model_group, req.query.model_name, function (result) {
                 res.send(result);
-                next();
+                return next();
             });
         }
         else {
-            next(new restify.ResourceNotFoundError("query format is ?model_name=xyz&model_group=xyz or ?model_name=xyz"));
+            return next(new restify.ResourceNotFoundError("query format is ?model_name=xyz&model_group=xyz or ?model_name=xyz"));
         }
     },
     post: function (req, res, next) {
@@ -68,11 +68,11 @@ module.exports = {
                 jsonBody = metadata;
                 model.saveDefinition(jsonBody, filePath, function (result) {
                     res.send(result);
-                    next();
+                    return next();
                 });
             }
             else {
-                next(new restify.InvalidArgumentError("invalid schema - correct schema is " + JSON.stringify(modelPostSchema)));
+                return next(new restify.InvalidArgumentError("invalid schema - correct schema is " + JSON.stringify(modelPostSchema)));
             }
         });
 

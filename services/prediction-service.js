@@ -19,16 +19,16 @@ module.exports = {
                             model_prediction: JSON.parse(res.entries[0].Prediction._)
                          });
                     }
-                    next(intervals);
+                    return next(intervals);
                 },
-                function (err) { next(err); }
+                function (err) { return next(err); }
             );   
         }
         else {
              // we provide only the requested predictions for the specified model 
             azure.ReadEntity(predictionTableName, interval, group + '_' + name).then(
                 function (res) {
-                next({
+                return next({
                     model_group: group,
                     model_name: name,
                     model_interval: interval,
@@ -37,7 +37,7 @@ module.exports = {
                 });
                 
             },
-            function (err) { next(err); });
+            function (err) { return next(err); });
         }
     },
     postPrediction: function (predictionArgs, next) {
@@ -45,8 +45,8 @@ module.exports = {
             model_query: predictionArgs
         });
         azure.AddMessage(modelQueryInputQueue, msg).then(function(res) {
-            next("/api/prediction?model_group="+predictionArgs.model_group+"&model_name="+predictionArgs.model_name+"&interval="+predictionArgs.model_interval); 
+            return next("/api/prediction?model_group="+predictionArgs.model_group+"&model_name="+predictionArgs.model_name+"&interval="+predictionArgs.model_interval); 
         },
-        function(err) { next(error); });
+        function(err) { return next(error); });
     }
 };

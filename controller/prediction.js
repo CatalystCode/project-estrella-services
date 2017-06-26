@@ -22,11 +22,11 @@ module.exports = {
             var interval = req.query.interval ? req.query.interval : -1;
             prediction.getPrediction(req.query.model_group, req.query.model_name, interval, function (result) {
                 res.send(result);
-                next();
+                return next();
             });
         }
         else {
-            next(new restify.ResourceNotFoundError("query format is ?model_name=xyz&model_group=xyz or ?model_name=xyz&model_group=xyz&interval=xyz"));
+            return next(new restify.ResourceNotFoundError("query format is ?model_name=xyz&model_group=xyz or ?model_name=xyz&model_group=xyz&interval=xyz"));
         }
     },
     post: function (req, res, next) {
@@ -35,11 +35,11 @@ module.exports = {
             prediction.postPrediction(jsonBody, function (result) {
                 var url = "http://"+req.headers.host + result;
                 res.send(url);
-                next();
+                return next();
             });
         }
         else {
-            next(new restify.InvalidArgumentError("invalid schema - correct schema is " + JSON.stringify(predictionPostSchema)));
+            return next(new restify.InvalidArgumentError("invalid schema - correct schema is " + JSON.stringify(predictionPostSchema)));
         }
     }
 }
