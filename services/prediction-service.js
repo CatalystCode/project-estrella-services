@@ -14,9 +14,9 @@ module.exports = {
                         intervals.push({
                             model_group: group,
                             model_name: name,
-                            model_interval: JSON.parse(res.entries[0].PartitionKey._),
-                            model_arguments: JSON.parse(res.entries[0].Arguments._),
-                            model_prediction: JSON.parse(res.entries[0].Prediction._)
+                            model_interval: JSON.parse(res.entries[i].PartitionKey._),
+                            model_arguments: JSON.parse(res.entries[i].Arguments._),
+                            model_prediction: JSON.parse(res.entries[i].Prediction._)
                          });
                     }
                     return next(intervals);
