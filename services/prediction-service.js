@@ -10,6 +10,9 @@ module.exports = {
             azure.ReadAllIntervals(predictionTableName, group + '_' + name).then(
                 function (res) {
                     var intervals = [];
+                    res.entries.sort(function(a, b){
+                        return a.PartitionKey._ - b.PartitionKey._
+                    });
                     for (var i=0; i<res.entries.length; i++) {
                         intervals.push({
                             model_group: group,
